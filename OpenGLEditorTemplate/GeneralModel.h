@@ -1,6 +1,10 @@
 #pragma once
 
 #include "Model3D.h"
+#include "ModelRotationState.h"
+
+
+class OpenGLCanvas;
 
 class GeneralModel
 {
@@ -9,6 +13,15 @@ public:
 		if (!instance)
 			instance = new GeneralModel;
 		return instance;
+	}
+
+
+	OpenGLCanvas* getOpenGLCanvas() {
+		return this->canvas;
+	}
+
+	void setOpenGLCanvas(OpenGLCanvas* canvas ) {
+		this->canvas = canvas;
 	}
 
 	int getData() {
@@ -27,12 +40,25 @@ public:
 		this->model = data;
 	}
 
+	ModelRotationState* getModelRotationState() {
+		return &(this->rotationState);
+	}
+
+	void setModelRotationState(ModelRotationState state) {
+		this->rotationState = state;
+	}
+
 
 
 private:
 	static GeneralModel* instance;
+
 	int data;
+
+	OpenGLCanvas* canvas;
+
 	Model3D model;
+	ModelRotationState rotationState;
 
 };
 

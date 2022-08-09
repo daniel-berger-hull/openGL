@@ -11,7 +11,7 @@
 #include "GeneralModel.h"
 //#include "Model3D.h"
 
-
+#include "ModelRotationState.h"
 
 // ---------------------------------------------------------------------------
 // TestGLCanvas
@@ -22,7 +22,11 @@ wxBEGIN_EVENT_TABLE(OpenGLCanvas, wxGLCanvas)
 	EVT_PAINT(OpenGLCanvas::OnPaint)
 	EVT_ERASE_BACKGROUND(OpenGLCanvas::OnEraseBackground)
 	EVT_MOUSE_EVENTS(OpenGLCanvas::OnMouse)
+	EVT_TIMER(TIMER_ANIMATE_CANVAS, OpenGLCanvas::OnAnimateTimerTick)
 wxEND_EVENT_TABLE()
+
+
+
 
 OpenGLCanvas::OpenGLCanvas(wxWindow* parent,
 	wxWindowID id,
@@ -43,10 +47,17 @@ OpenGLCanvas::OpenGLCanvas(wxWindow* parent,
 	m_gldata.beginy = 0.0f;
 	m_gldata.zoom = 45.0f;
 	trackball(m_gldata.quat, 0.0f, 0.0f, 0.0f, 0.0f);
+
+
+	static const int INTERVAL = 25; // milliseconds
+	m_timer = new wxTimer(this, TIMER_ANIMATE_CANVAS);
+	m_timer->Start(INTERVAL);
+
 }
 
 OpenGLCanvas::~OpenGLCanvas()
 {
+	m_timer->Stop();
 	delete m_glRC;
 }
 
@@ -56,6 +67,15 @@ void OpenGLCanvas::RenderScreen()
 
 	GeneralModel* instance = instance->getInstance();
 	Model3D* model = instance->getModel3D();
+	ModelRotationState* state = instance->getModelRotationState();
+
+
+
+
+	//glRotatef(angle, 0.0f, 1.0f, 0.0f);
+	glRotatef(state->getXAngle(), 1.0f, 0.0f, 0.0f);
+	glRotatef(state->getYAngle(), 0.0f, 1.0f, 0.0f);
+	glRotatef(state->getZAngle(), 0.0f, 0.0f, 1.0f);
 
 
 
@@ -162,32 +182,7 @@ void OpenGLCanvas::Load3DModel(const char* file_name)
 	//model.load(file_name);
 }
 
-//
-//// Load the DXF file.  If the zlib support is compiled in wxWidgets,
-//// supports also the ".dxf.gz" gzip compressed files.
-//void OpenGLCanvas::LoadDXF(const wxString& filename)
-//{
-//	/*wxFileInputStream stream(filename);
-//	if (stream.IsOk())
-//#if wxUSE_ZLIB
-//	{
-//		if (filename.Right(3).Lower() == wxT(".gz"))
-//		{
-//			wxZlibInputStream zstream(stream);
-//			m_renderer.Load(zstream);
-//		}
-//		else
-//		{
-//			m_renderer.Load(stream);
-//		}
-//	}
-//#else
-//	{
-//		m_renderer.Load(stream);
-//	}
-//#endif*/
-//
-//}
+
 
 void OpenGLCanvas::OnMouse(wxMouseEvent& event)
 {
@@ -212,6 +207,19 @@ void OpenGLCanvas::OnMouse(wxMouseEvent& event)
 	m_gldata.beginx = event.GetX();
 	m_gldata.beginy = event.GetY();
 }
+
+void OpenGLCanvas::OnAnimateTimerTick(wxTimerEvent& event)
+{
+	
+	GeneralModel* instance = instance->getInstance();
+	instance->getModelRotationState()->update();
+
+	//angle += 0.5f;
+	Refresh();
+}
+
+
+
 
 void OpenGLCanvas::InitGL()
 {

@@ -33,6 +33,9 @@
     <ClCompile Include="GeneralModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ModelRotationState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGLEditor.h">
@@ -56,9 +59,15 @@
     <ClInclude Include="GeneralModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ModelRotationState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="sample.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ToDoAug4.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

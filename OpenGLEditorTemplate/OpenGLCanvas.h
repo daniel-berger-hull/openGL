@@ -3,6 +3,7 @@
 #include "wx/defs.h"
 #include "wx/app.h"
 #include "wx/menu.h"
+#include "wx/timer.h"
 #include "wx/dcclient.h"
 #include "wx/wfstream.h"
 #if wxUSE_ZLIB
@@ -16,7 +17,7 @@ extern "C"
 #include "trackball.h"
 }
 
-
+#include "EventsID.h"
 
 #include "Model3D.h"
 
@@ -45,6 +46,11 @@ public:
 
 	void Load3DModel(const char* file_name);
 
+	void OnAnimateTimerTick(wxTimerEvent& event);
+
+	
+
+
 
 protected:
 	void OnPaint(wxPaintEvent& event);
@@ -61,7 +67,11 @@ private:
 
 	wxGLContext* m_glRC;
 	GLData       m_gldata;
-	//Model3D		 model;
+
+	wxTimer*   m_timer;
+
+	float angle = 0.0f;
+	
 
 	wxDECLARE_NO_COPY_CLASS(OpenGLCanvas);
 	wxDECLARE_EVENT_TABLE();

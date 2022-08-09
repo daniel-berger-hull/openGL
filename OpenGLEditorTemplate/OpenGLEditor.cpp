@@ -138,6 +138,11 @@ void MyFrame::buildMainView()
 	SetSizerAndFit(mainHorizontalSizer); // use the sizer for layout and size window
 						  // accordingly and prevent it from being resized
 						  // to smaller size
+
+
+
+	GeneralModel* instance = instance->getInstance();
+	instance->setOpenGLCanvas(m_openGLCanvas);
 }
 
 

@@ -12,6 +12,8 @@
 #define	SUCCESS  true
 #define FAILURE  false
 
+#define	INVALID_FACE_ID     -10
+
 #define HEADER_MAGIC_NUMBER 0X1010
 #define	MAX_NUMBER_RANGE    100000
 
@@ -30,6 +32,7 @@ typedef struct Point3D {
 };
 
 typedef struct Face3D {
+	long id;
 	int type;
 	Point3D  normal;
 	Point3D  color;
@@ -58,6 +61,12 @@ class Model3D
 		void displayHeaderDetails();
 		void displayFaceDetails(Face3D* destination);
 
+		int getFacesCount()       { return fileHeader.nbrFaces; }
+		int getPointsCount()      { return fileHeader.nbrPoints; }
+
+		Face3D*  getFace(long id);
+
+
 		std::list<Face3D>* getFaceList() { return &facesList; }
 
 		bool isValidNumber(int number);
@@ -65,6 +74,9 @@ private:
 	int a;
 	FileHeader fileHeader;
 	std::list<Face3D> facesList;
+	long nextFaceIDAvailabe = 0;
+
+	Face3D selected;
 
 };
 

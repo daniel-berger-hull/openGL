@@ -34,6 +34,12 @@ bool Model3D::save(const char* file_name)
 				   &nextFace.vertex[0]);
 	}
 
+
+	//std::list<Face3D> facesList;
+
+	//facesList(0);
+
+
 	fclose(fp);
 	return SUCCESS;
 }
@@ -161,8 +167,57 @@ bool Model3D::addFace(int type, Point3D* ptrNormal, Point3D* color, Point3D* ptr
 		fileHeader.nbrPoints++;
 	}
 
+	
+	newFace.id = nextFaceIDAvailabe++;
+
 	facesList.push_back(newFace);
 	//fileHeader.nbrFaces++;
+}
+
+Face3D*  Model3D::getFace(long id)
+{
+	if (id < 0)				   return NULL;
+	if (id > facesList.size()) return NULL;
+
+	for (std::list<Face3D>::iterator it = facesList.begin(); it != facesList.end(); ++it)
+	{
+		if ((*it).id == id)
+		{
+			Face3D copy = *it;
+
+			selected.id = copy.id;
+			selected.type = copy.type;
+			selected.normal = copy.normal;
+			selected.color = copy.color;
+
+			size_t nbrPoints = copy.type == TRIANGLE ? 3 : 4;
+
+			for (int i = 0; i < nbrPoints; i++)
+			{
+				Point3D vertex = copy.vertex[i];
+				selected.vertex[i].x = vertex.x;
+				selected.vertex[i].y = vertex.y;
+				selected.vertex[i].z = vertex.z;
+			}
+
+			// For the triangle, there is an extra vertex in the array
+			// of the Face3D struct, and we make sure to put zeros
+			// otherwise, a previous content could be left over and 
+			// the data is incorrect
+			// Note: This design is not very elegent, as 2 IF statements
+			//       are used back to back...
+			if (copy.type == TRIANGLE)
+			{
+				selected.vertex[3].x = 0.0f;
+				selected.vertex[3].y = 0.0f;
+				selected.vertex[3].z = 0.0f;
+			}
+
+			return &selected;
+		}	
+	}
+
+	return NULL;
 }
 
 

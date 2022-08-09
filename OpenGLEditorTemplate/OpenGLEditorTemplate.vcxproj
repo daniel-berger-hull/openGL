@@ -146,6 +146,7 @@
     <ClCompile Include="ControlPanel.cpp" />
     <ClCompile Include="GeneralModel.cpp" />
     <ClCompile Include="Model3D.cpp" />
+    <ClCompile Include="ModelRotationState.cpp" />
     <ClCompile Include="OpenGLCanvas.cpp" />
     <ClCompile Include="OpenGLEditor.cpp" />
     <ClCompile Include="trackball.c" />
@@ -155,12 +156,14 @@
     <ClInclude Include="EventsID.h" />
     <ClInclude Include="GeneralModel.h" />
     <ClInclude Include="Model3D.h" />
+    <ClInclude Include="ModelRotationState.h" />
     <ClInclude Include="OpenGLCanvas.h" />
     <ClInclude Include="OpenGLEditor.h" />
     <ClInclude Include="trackball.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="sample.ico" />
+    <Image Include="ToDoAug4.png" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="sample.rc" />
