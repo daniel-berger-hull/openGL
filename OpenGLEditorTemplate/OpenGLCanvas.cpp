@@ -70,22 +70,44 @@ void OpenGLCanvas::RenderScreen()
 	ModelRotationState* state = instance->getModelRotationState();
 
 
+	int width, height;
+
+	this->GetSize(&width, &height);
+
+	int midX = width / 2;
+	int midY = height / 2;
 
 
-	//glRotatef(angle, 0.0f, 1.0f, 0.0f);
+
+	//glViewport(0, m_windowHeight / 2, m_windowWidth / 2, m_windowHeight / 2);
+	glViewport(0, 0, midX, midY);
+	
+	
+
+	glPushMatrix(); //set where to start the current object
 	glRotatef(state->getXAngle(), 1.0f, 0.0f, 0.0f);
 	glRotatef(state->getYAngle(), 0.0f, 1.0f, 0.0f);
 	glRotatef(state->getZAngle(), 0.0f, 0.0f, 1.0f);
 
-
-
-	//std::list<Face3D>* facesList = model.getFaceList();
 	std::list<Face3D>* facesList = model->getFaceList();
 	for (std::list<Face3D>::iterator it = facesList->begin(); it != facesList->end(); ++it)
 	{
 		Face3D nextFace = *it;
 		RenderFace(&nextFace);
 	}
+
+	glPopMatrix(); //end the current object transformations
+
+
+	glViewport(midX, midY, midX, midY);
+	for (std::list<Face3D>::iterator it = facesList->begin(); it != facesList->end(); ++it)
+	{
+		Face3D nextFace = *it;
+		RenderFace(&nextFace);
+	}
+
+
+
 }
 
 
