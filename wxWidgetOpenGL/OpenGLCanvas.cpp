@@ -78,22 +78,22 @@ void OpenGLCanvas::RenderScreen()
 
 
 
-	glBegin(GL_TRIANGLES);
-		glColor3f(255.0 , 0.0 , 0.0f);
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(2.0f, 0.0f, 0.0f); 
-		glVertex3f(0.0f, 2.0f, 0.0f);
-		glVertex3f(-2.0f, 0.0f, 0.0f);
-	glEnd();
-
-	//glBegin(GL_QUADS);
-	//	glColor3f(color.x, color.y, color.z);
-	//	glNormal3f(normal.x, normal.y, normal.z);
-	//	glVertex3f(vertex[0].x, vertex[0].y, vertex[0].z);
-	//	glVertex3f(vertex[1].x, vertex[1].y, vertex[1].z);
-	//	glVertex3f(vertex[2].x, vertex[2].y, vertex[2].z);
-	//	glVertex3f(vertex[3].x, vertex[3].y, vertex[3].z);
+	//glBegin(GL_TRIANGLES);
+	//	glColor3f(255.0 , 0.0 , 0.0f);
+	//	glNormal3f(0.0f, 0.0f, 1.0f);
+	//	glVertex3f(2.0f, 0.0f, 0.0f); 
+	//	glVertex3f(0.0f, 2.0f, 0.0f);
+	//	glVertex3f(-2.0f, 0.0f, 0.0f);
 	//glEnd();
+
+	glBegin(GL_QUADS);
+		glColor3f(255.0, 255.0, 255.0);
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glVertex3f( 1.0f,  -1.0f, 0.0f);
+		glVertex3f( 1.0f,  1.0f, 0.0f);
+		glVertex3f(-1.0f, 1.0f, 0.0f);
+		glVertex3f(-1.0f, -1.0f, 0.0f);
+	glEnd();
 }
 	
 
@@ -207,6 +207,8 @@ void OpenGLCanvas::InitGL()
 	/* remove back faces */
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_2D);							// Enable Texture Mapping
+
 
 	/* speedups */
 	glEnable(GL_DITHER);

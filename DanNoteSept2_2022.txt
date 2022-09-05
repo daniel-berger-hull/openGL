@@ -1,0 +1,24 @@
+From the NeHe projects in folder C:\data\Programming\Workspaces\C++\OpenGL\examples\NeHe\vc,
+
+Check the following project as hints for techniques to add to my OpenGL projects:
+
+
+
+Lesson 26  beach ball on glass
+   Reflection on the glass is something to check who it is done..
+   
+ Priority  Medium
+
+Lesson 27  true shadow
+   Adding Shadows is very important, as if I do low poly projects, they seem to not use the Textures,
+   and improving my lighting and adding shadow would be the best path to have nice rendering...
+
+ Priority  Very High!
+   
+Lesson 30  ball scene
+  It appears like Texture and Colored object are mixed in this project
+  1 - To try see if that is the case
+  2 - And if yes, what are the OpenGL setting to acheive this
+  
+ Priority  Medium
+

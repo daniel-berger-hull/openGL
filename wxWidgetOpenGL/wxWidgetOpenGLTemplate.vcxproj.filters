@@ -24,6 +24,9 @@
     <ClCompile Include="OpenGLCanvas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\..\libs\BMP\bmp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -41,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="sample.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ToDoAug4.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

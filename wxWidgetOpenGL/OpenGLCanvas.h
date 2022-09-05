@@ -58,6 +58,9 @@ private:
 	wxTimer*   m_timer;					// Timer added, if some basic animation required...
 
 	float angle = 0.0f;
+
+	GLuint	texture[3];			// Storage For 3 Textures
+
 	
 	wxDECLARE_NO_COPY_CLASS(OpenGLCanvas);
 	wxDECLARE_EVENT_TABLE();

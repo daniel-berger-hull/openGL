@@ -8,6 +8,7 @@
 	#include <GL/glu.h>
 #endif
 
+#include "bmp.h"
 
 
 // ---------------------------------------------------------------------------
@@ -64,6 +65,83 @@ OpenGLCanvas::~OpenGLCanvas()
 }
 
 
+AUX_RGBImageRec* OpenGLCanvas::LoadBMP(char* Filename)				// Loads A Bitmap Image
+//AUX_RGBImageRec* LoadBMP(char* Filename)				// Loads A Bitmap Image
+{
+	FILE* File = NULL;									// File Handle
+
+	if (!Filename)										// Make Sure A Filename Was Given
+	{
+		return NULL;									// If Not Return NULL
+	}
+
+	File = fopen(Filename, "r");							// Check To See If The File Exists
+
+	if (File)											// Does The File Exist?
+	{
+		fclose(File);									// Close The Handle
+		//return auxDIBImageLoad(Filename);				// Load The Bitmap And Return A Pointer	
+		//AUX_RGBImageRec* auxDIBImageLoad(const char* FileName)
+		const char* FileName2 = Filename;
+		return new AUX_RGBImageRec(FileName2);
+				    
+		
+	}
+
+	return NULL;										// If Load Failed Return NULL
+}
+
+int OpenGLCanvas::LoadGLTextures()									// Load Bitmaps And Convert To Textures
+{
+	int Status = FALSE;									// Status Indicator
+
+	AUX_RGBImageRec* TextureImage[1];					// Create Storage Space For The Texture
+
+	memset(TextureImage, 0, sizeof(void*) * 1);           	// Set The Pointer To NULL
+
+	// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
+	char textureFileName[] = "C:/data/Programming/Workspaces/C++/OpenGL/MyProjects/github/openGL/wxWidgetOpenGLCube/Data/Crate.bmp";
+	const char* file = textureFileName;
+
+	if (TextureImage[0] = LoadBMP(textureFileName))
+	{
+		Status = TRUE;									// Set The Status To TRUE
+
+		glGenTextures(1, &texture[0]);					// Create Three Textures
+
+		// Create Nearest Filtered Texture
+		glBindTexture(GL_TEXTURE_2D, texture[0]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[0]->sizeX, TextureImage[0]->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->data);
+
+		// Create Linear Filtered Texture
+		//glBindTexture(GL_TEXTURE_2D, texture[1]);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		//glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[0]->sizeX, TextureImage[0]->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->data);
+
+		// Create MipMapped Texture
+		//glBindTexture(GL_TEXTURE_2D, texture[2]);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+		//gluBuild2DMipmaps(GL_TEXTURE_2D, 3, TextureImage[0]->sizeX, TextureImage[0]->sizeY, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->data);
+	}
+
+	if (TextureImage[0])								// If Texture Exists
+	{
+		if (TextureImage[0]->data)						// If Texture Image Exists
+		{
+			free(TextureImage[0]->data);				// Free The Texture Image Memory
+		}
+
+		free(TextureImage[0]);							// Free The Image Structure
+	}
+
+	return Status;										// Return The Status
+}
+
+
 void OpenGLCanvas::RenderScreen()
 {
 	int width, height;
@@ -72,6 +150,29 @@ void OpenGLCanvas::RenderScreen()
 
 	int midX = width / 2;
 	int midY = height / 2;
+
+	//glBindTexture(GL_TEXTURE_2D, texture[0]);
+
+
+
+	//glBegin(GL_QUADS);
+	//	glColor3f(255.0, 255.0, 255.0);
+	//	glNormal3f(0.0f, 0.0f, 1.0f);
+	//	/*glVertex3f(1.0f, -1.0f, 0.0f);
+	//	glVertex3f(1.0f, 1.0f, 0.0f);
+	//	glVertex3f(-1.0f, 1.0f, 0.0f);
+	//	glVertex3f(-1.0f, -1.0f, 0.0f);*/
+	//	glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 0.0f);
+	//	glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, 0.0f);
+	//	glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, 0.0f);
+	//	glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, 0.0f);
+	//glEnd();
+
+	
+	
+
+
+
 
 	//glViewport(0, m_windowHeight / 2, m_windowWidth / 2, m_windowHeight / 2);
 	
@@ -210,6 +311,11 @@ void OpenGLCanvas::OnAnimateTimerTick(wxTimerEvent& event)
 void OpenGLCanvas::InitGL()
 {
 
+	if (!LoadGLTextures())								// Jump To Texture Loading Routine
+	{
+		return;									// If Texture Didn't Load Return FALSE
+	}
+
 	// white light
 	static const GLfloat light0_color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	static const GLfloat light0_pos[4] = { -50.0f, 50.0f, 0.0f, 0.0f };
@@ -219,6 +325,7 @@ void OpenGLCanvas::InitGL()
 	static const GLfloat light1_pos[4] = { 50.0f, 50.0f, 0.0f, 0.0f };
 
 	/* remove back faces */
+	//glEnable(GL_TEXTURE_2D);							// Enable Texture Mapping
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 
@@ -240,6 +347,9 @@ void OpenGLCanvas::InitGL()
 
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
+
+	
+
 }
 
 void OpenGLCanvas::ResetProjectionMode()

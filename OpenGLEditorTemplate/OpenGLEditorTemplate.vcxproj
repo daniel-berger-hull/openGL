@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{5a62249e-1f0e-41b2-ab9d-c0e5c470057c}</ProjectGuid>
+    <ProjectGuid>{7F872F0C-A6BD-4B7D-A1E7-2E383D765725}</ProjectGuid>
     <RootNamespace>OpenGLEditorTemplate</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>

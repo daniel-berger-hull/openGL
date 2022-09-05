@@ -18,6 +18,8 @@ extern "C"
 
 #include "OBJReader.h"
 
+//#include "bmp.h"
+
 struct GLData
 {
 	bool initialized;           // have OpenGL been initialized?
@@ -46,6 +48,10 @@ public:
 	vector<Face3D>*  getFaceList()   { return &faces; }
 
 
+
+	
+
+
 protected:
 	void OnPaint(wxPaintEvent& event);
 	void OnSize(wxSizeEvent& event);
@@ -56,6 +62,11 @@ private:
 	void InitGL();
 	void ResetProjectionMode();
 	void RenderScreen();
+
+
+
+	AUX_RGBImageRec* LoadBMP(char* Filename);
+	int LoadGLTextures();
 	
 	
 	wxGLContext* m_glRC;

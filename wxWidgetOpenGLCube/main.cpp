@@ -17,26 +17,41 @@ bool MyApp::OnInit()
     if ( !wxApp::OnInit() )
         return false;
 
-    // Create the main frame window
-	MyFrame* frame = new MyFrame(NULL, wxT("Template wxWidget+OpenGL project"),
-		wxDefaultPosition, { WINDOWS_WIDTH , WINDOWS_HEIGHT });
-	
-    frame->Show(true);
+ //   // Create the main frame window
+	//MyFrame* frame = new MyFrame(NULL, wxT("Template wxWidget+OpenGL project"),
+	//	wxDefaultPosition, { WINDOWS_WIDTH , WINDOWS_HEIGHT });
+	//
+ //   frame->Show(true);
 
 
-	//const char* filePath = "C:\\data\\Programming\\Workspaces\\C++\\3D\\Models\\OBJ\\Blender\\";
+	const char* filePath        = "C:\\data\\Programming\\Workspaces\\C++\\3D\\Models\\OBJ\\Blender\\";
+	const char* textureFileName = "C:/data/Programming/Workspaces/C++/OpenGL/MyProjects/github/openGL/wxWidgetOpenGLCube/Data/Crate.bmp";
 
-	string objFileName = string();
-	string materialFileName = string();
+	//char textureFileName[] = "C:/data/Programming/Workspaces/C++/OpenGL/MyProjects/github/openGL/wxWidgetOpenGLCube/Data/Crate.bmp";
+	//const char* file = textureFileName;
 
-	objFileName.append("cube.obj");
-	materialFileName.append("cube.mtl");
+
+	//const char* filePath = "C:\\data\\Programming\\Workspaces\\C++\\3D\\Models\\Blender\\";
+
+				
+	string objFileName = string(filePath);
+	string materialFileName = string(filePath);
+
+	objFileName.append("ball.obj");
+	materialFileName.append("ball.mtl");
+
+
 
 
 	init();
 	if ( loadFile(objFileName, materialFileName) != OK)
 		return false;
 
+	// Create the main frame window
+	MyFrame* frame = new MyFrame(NULL, wxT("Template wxWidget+OpenGL project"),
+		wxDefaultPosition, { WINDOWS_WIDTH , WINDOWS_HEIGHT });
+
+	
 	// This part is bad design, as it needs to access global vector
 	// defined in an .h file in the project, and it transfer it into
 	// the Canvas' copy of this global vector..
@@ -46,9 +61,11 @@ bool MyApp::OnInit()
 	vector<Face3D>* faces = frame->GetCanvas()->getFaceList();
 	copy3DModel(vertexes, normals, faces);
 
+	frame->Show(true);
 
     return true;
 }
+
 
 
 
