@@ -146,6 +146,25 @@ int OpenGLCanvas::LoadGLTextures()             // Load Bitmaps And Convert To Te
 }
 
 
+void OpenGLCanvas::RenderGround()
+{
+
+	const float maxZ = (float)(WORLD_DEPTH / 2);
+	const float minZ = -maxZ;
+	const float maxX = (float)(WORLD_WIDTH / 2);
+	const float minX = -maxX;
+
+
+	glBegin(GL_QUADS);
+		glColor3f(0.07058823529, 0.32549019608, 0.12941176471);
+		glNormal3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(maxX, 0.0f, maxZ);
+		glVertex3f(maxX, 0.0f, minZ);
+		glVertex3f(minX, 0.0f, minZ);
+		glVertex3f(minX, 0.0f, maxZ);	
+	glEnd();
+}
+
 void OpenGLCanvas::RenderAxis()
 {
 	const float maxZ = (float)(WORLD_DEPTH / 2);
@@ -159,9 +178,9 @@ void OpenGLCanvas::RenderAxis()
 	for (float z = minZ; z < maxZ; z += 5.0f)
 	{
 		glBegin(GL_LINES);
-			glColor4f(0.0, 255.0, 255.0, 0.15f);
-			glVertex3f(minX, 0.0f, z);
-			glVertex3f(maxX, 0.0f, z);
+			glColor4f(0.0, 255.0, 255.0, 0.75f);
+			glVertex3f(minX, 0.05f, z);
+			glVertex3f(maxX, 0.05f, z);
 		glEnd();
 
 	}
@@ -169,9 +188,9 @@ void OpenGLCanvas::RenderAxis()
 	for (float x = minX; x < maxX; x += 5.0f)
 	{
 		glBegin(GL_LINES);
-			glColor4f(0.0, 255.0, 255.0, 0.15f);
-			glVertex3f(x, 0.0f, minZ);
-			glVertex3f(x, 0.0f, maxZ);
+			glColor4f(0.0, 255.0, 255.0, 0.75f);
+			glVertex3f(x, 0.05f, minZ);
+			glVertex3f(x, 0.05f, maxZ);
 		glEnd();
 	}
 
@@ -209,6 +228,7 @@ void OpenGLCanvas::RenderScreen()
 	//glEnd();
 
 
+	RenderGround();
 	RenderAxis();
 
 	list<WorldObject3D>* list = GeneralModel::getInstance()->getWorldObjectsList();

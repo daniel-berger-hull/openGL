@@ -55,6 +55,7 @@ private:
 	void ResetProjectionMode();
 	void RenderScreen();
 	void RenderAxis();
+	void RenderGround();
 
 	AUX_RGBImageRec* LoadBMP(const char* Filename);  // This one should be moved in the OBJReader!!!
 	int LoadGLTextures();
