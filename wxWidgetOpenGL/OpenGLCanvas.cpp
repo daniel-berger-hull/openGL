@@ -68,41 +68,63 @@ void OpenGLCanvas::RenderScreen()
 	int midY = height / 2;
 
 
+	glBegin(GL_QUADS);
+		glColor3f(255.0, 0.0, 0.0);
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glVertex3f( 1.0f,  -1.0f, 1.0f);
+		glVertex3f( 1.0f,   1.0f, 1.0f);
+		glVertex3f(-1.0f,   1.0f, 1.0f);
+		glVertex3f(-1.0f,  -1.0f, 1.0f);
+	glEnd();
 
-	//glViewport(0, m_windowHeight / 2, m_windowWidth / 2, m_windowHeight / 2);
-	
-	
-	/*glRotatef(state->getXAngle(), 1.0f, 0.0f, 0.0f);
-	glRotatef(state->getYAngle(), 0.0f, 1.0f, 0.0f);
-	glRotatef(state->getZAngle(), 0.0f, 0.0f, 1.0f);*/
+	glBegin(GL_QUADS);
+		glColor3f(0.0, 0.0, 255.0);
+		glNormal3f(1.0f, 0.0f,   0.0f);
+		glVertex3f(1.0f,  1.0f,  -1.0f);
+		glVertex3f(1.0f,  1.0f,  1.0f);
+		glVertex3f(1.0f, -1.0f,  1.0f);
+		glVertex3f(1.0f, -1.0f, -1.0f);
+	glEnd();
 
+	glBegin(GL_QUADS);
+		glColor3f(255.0, 0.0, 0.0);
+		glNormal3f(0.0f, 0.0f, -1.0f);
 
+		glVertex3f(-1.0f, -1.0f, -1.0f);
+		glVertex3f(-1.0f,  1.0f, -1.0f);
+		glVertex3f( 1.0f,  1.0f, -1.0f);
+		glVertex3f( 1.0f, -1.0f, -1.0f);
+	glEnd();
 
-	//glBegin(GL_TRIANGLES);
-	//	glColor3f(255.0 , 0.0 , 0.0f);
-	//	glNormal3f(0.0f, 0.0f, 1.0f);
-	//	glVertex3f(2.0f, 0.0f, 0.0f); 
-	//	glVertex3f(0.0f, 2.0f, 0.0f);
-	//	glVertex3f(-2.0f, 0.0f, 0.0f);
-	//glEnd();
+	glBegin(GL_QUADS);
+		glColor3f(0.0, 0.0, 255.0);
+		glNormal3f(-1.0f, 0.0f, 0.0f);
+		glVertex3f(-1.0f, 1.0f,  -1.0f);
+		glVertex3f(-1.0f, -1.0f, -1.0f);
+		glVertex3f(-1.0f, -1.0f,  1.0f);
+		glVertex3f(-1.0f,  1.0f,  1.0f);
+	glEnd();
 
 	glBegin(GL_QUADS);
 		glColor3f(255.0, 255.0, 255.0);
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glVertex3f( 1.0f,  -1.0f, 0.0f);
-		glVertex3f( 1.0f,  1.0f, 0.0f);
-		glVertex3f(-1.0f, 1.0f, 0.0f);
-		glVertex3f(-1.0f, -1.0f, 0.0f);
+		glNormal3f(0.0f, 1.0f, 0.0f);
+		glVertex3f( 1.0f,  1.0f, 1.0f);
+		glVertex3f( 1.0f,  1.0f, -1.0f);
+		glVertex3f(-1.0f,  1.0f, -1.0f);
+		glVertex3f(-1.0f,  1.0f, 1.0f);
 	glEnd();
+
+	glBegin(GL_QUADS);
+		glColor3f(255.0, 255.0, 255.0);
+		glNormal3f(0.0f, -1.0f, 0.0f);
+		glVertex3f(1.0f, -1.0f, -1.0f);
+		glVertex3f(1.0f, -1.0f,  1.0f);
+		glVertex3f(-1.0f, -1.0f, 1.0f);
+		glVertex3f(-1.0f, -1.0f, -1.0f);
+	glEnd();
+
 }
 	
-
-
-	
-
-
-
-
 
 
 
@@ -184,7 +206,6 @@ void OpenGLCanvas::OnMouse(wxMouseEvent& event)
 
 void OpenGLCanvas::OnAnimateTimerTick(wxTimerEvent& event)
 {
-	
 	angle += 0.5f;
 	Refresh();
 }
