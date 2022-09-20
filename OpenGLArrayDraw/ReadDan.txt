@@ -1,0 +1,4 @@
+the old school glDrawArrays function been taken from this great site:
+  http://www.songho.ca/opengl/gl_vertexarray.html
+  
+Study this site, as there are few more good hints on the OpengGL fixed pipeline coding

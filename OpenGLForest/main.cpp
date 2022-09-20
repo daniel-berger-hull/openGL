@@ -23,17 +23,23 @@ bool MyApp::initModels()
 	const int NBR_ROCK = 50;
 	Model3D* model;
 
+
+	GeneralModel* genModel = GeneralModel::getInstance();
+
+
+	Point3D		lightLocation = { -50.0f, 50.0f, 0.0f };
+
+
+	genModel->setLightLocation(lightLocation);
+
 	Camera3D camera;
 	camera.setLocation({ CAMERA_X_POS, CAMERA_Y_POS, CAMERA_Z_POS });
 	camera.setRotation({ CAMERA_X_ROT, CAMERA_Y_ROT, CAMERA_Z_ROT });
 
-	GeneralModel::getInstance()->setCamera3D(camera);
+	genModel->setCamera3D(camera);
 
 	// Creation of the 3D instances of the world to be rendered...
-	vector<Model3D*>* modelsVector = GeneralModel::getInstance()->getModelsVector();
-
-	//Model3D* model = GeneralModel::getInstance()->getModelsVector()->front();
-
+	vector<Model3D*>* modelsVector = genModel->getModelsVector();
 
 	
 	WorldObject3D trees[NBR_TREE];
@@ -56,7 +62,7 @@ bool MyApp::initModels()
 
 		trees[i].setFactor(factor);
 
-		GeneralModel::getInstance()->addWorldObject3D(trees[i]);
+		genModel->addWorldObject3D(trees[i]);
 	}
 
 	WorldObject3D rocks[NBR_ROCK];
@@ -79,10 +85,8 @@ bool MyApp::initModels()
 
 		rocks[i].setFactor(factor);
 
-		GeneralModel::getInstance()->addWorldObject3D(rocks[i]);
+		genModel->addWorldObject3D(trees[i]);
 	}
-
-
 
 
 	return true;

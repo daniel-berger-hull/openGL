@@ -52,18 +52,6 @@ public:
 		return &(this->modelsList);
 	}
 
-	/*void addModel3D(Model3D* newModel)
-	{
-		modelsList.push_back(newModel);
-	}*/
-
-	// old
-	/*int sizeModel3D()
-	{
-		return modelsList.size();
-	}*/
-
-
 	vector<Model3D*>* getModelsVector()
 	{
 		return &(this->modelsVector);
@@ -80,40 +68,55 @@ public:
 	}
 
 
-
-
-
-	Model3D* getModel3D() {
+	Model3D* getModel3D() 
+	{
 		return &(this->model);
 	}
 
-	void setModel3D(Model3D data) {
+	void setModel3D(Model3D data) 
+	{
 		this->model = data;
 	}
 
-	Camera3D* getCamera3D() {
+	Camera3D* getCamera3D() 
+	{
 		return &(this->camera3D);
 	}
 
-	void setCamera3D(Camera3D cam) {
+	void setCamera3D(Camera3D cam) 
+	{
 		this->camera3D = cam;
 	}
 
-	string getModelPath() {
+	string getModelPath() 
+	{
 		return this->modelPath;
 	}
 
-	void setModelPath(string path) {
+	void setModelPath(string path) 
+	{
 		this->modelPath = path;
 	 }
 
+	Point3D* getLightLocation()   
+	{ 
+		return &(this->lightLocation); 
+	}
 
+	void setLightLocation(Point3D location)
+	{
+		this->lightLocation = location;
+	}
+	
+	void moveLightLocation(Point3D delta)
+	{
+		this->lightLocation.x += delta.x;
+		this->lightLocation.y += delta.y;
+		this->lightLocation.z += delta.z;
 
+	}
 
 private:
-
-	//GeneralModel();
-
 
 	static GeneralModel* instance;
 
@@ -126,6 +129,7 @@ private:
 
 	Model3D             model;
 	Camera3D            camera3D;
+	Point3D				lightLocation;
 
 
 	string modelPath;

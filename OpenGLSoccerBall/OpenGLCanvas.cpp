@@ -1,6 +1,6 @@
 #include "OpenGLCanvas.h"
 
-#include <list>
+//#include "dxfrenderer.h"
 
 #ifdef __DARWIN__
 	#include <OpenGL/glu.h>
@@ -10,12 +10,7 @@
 
 #include "bmp.h"
 
-#include "GeneralModel.h"
-#include "Model3D.h"
-#include "WorldObject3D.h"
-
-#include "OpenGLFace.h"
-#include "Model3DRender.h"
+#include "PrintText.h"
 
 // ---------------------------------------------------------------------------
 // TestGLCanvas
@@ -26,10 +21,15 @@ wxBEGIN_EVENT_TABLE(OpenGLCanvas, wxGLCanvas)
 	EVT_PAINT(OpenGLCanvas::OnPaint)
 	EVT_ERASE_BACKGROUND(OpenGLCanvas::OnEraseBackground)
 	EVT_MOUSE_EVENTS(OpenGLCanvas::OnMouse)
-	//EVT_MOUSEWHEEL(OpenGLCanvas::OnMouseWheel)
 	EVT_TIMER(TIMER_ANIMATE_CANVAS, OpenGLCanvas::OnAnimateTimerTick)
 wxEND_EVENT_TABLE()
 
+
+
+extern vector<Point3D> vertexes;
+extern vector<Point3D> normals;
+extern vector<Face3D>  faces;
+extern vector<int>     parsingErrors;
 
 
 OpenGLCanvas::OpenGLCanvas(wxWindow* parent,
@@ -57,6 +57,8 @@ OpenGLCanvas::OpenGLCanvas(wxWindow* parent,
 	m_timer = new wxTimer(this, TIMER_ANIMATE_CANVAS);
 	m_timer->Start(INTERVAL);
 
+	makeRasterFont();
+
 }
 
 OpenGLCanvas::~OpenGLCanvas()
@@ -66,7 +68,8 @@ OpenGLCanvas::~OpenGLCanvas()
 }
 
 
-AUX_RGBImageRec* OpenGLCanvas::LoadBMP(const char* Filename)				// Loads A Bitmap Image
+AUX_RGBImageRec* OpenGLCanvas::LoadBMP(char* Filename)				// Loads A Bitmap Image
+//AUX_RGBImageRec* LoadBMP(char* Filename)				// Loads A Bitmap Image
 {
 	FILE* File = NULL;									// File Handle
 
@@ -76,39 +79,35 @@ AUX_RGBImageRec* OpenGLCanvas::LoadBMP(const char* Filename)				// Loads A Bitma
 	}
 
 	File = fopen(Filename, "r");							// Check To See If The File Exists
+
 	if (File)											// Does The File Exist?
 	{
 		fclose(File);									// Close The Handle
-		
+		//return auxDIBImageLoad(Filename);				// Load The Bitmap And Return A Pointer	
+		//AUX_RGBImageRec* auxDIBImageLoad(const char* FileName)
 		const char* FileName2 = Filename;
-		return new AUX_RGBImageRec(FileName2);		
+		return new AUX_RGBImageRec(FileName2);
+				    
+		
 	}
 
 	return NULL;										// If Load Failed Return NULL
 }
 
-int OpenGLCanvas::LoadGLTextures()             // Load Bitmaps And Convert To Textures
+int OpenGLCanvas::LoadGLTextures()									// Load Bitmaps And Convert To Textures
 {
-	int Status = FALSE;						  // Status Indicator
-
-	Model3D* model = GeneralModel::getInstance()->getModel3D();
-	vector<MaterialInfo>* materials = model->getMaterialList();
-
-	//int textureCount = materials->size();
-
+	int Status = FALSE;									// Status Indicator
 
 	AUX_RGBImageRec* TextureImage[1];					// Create Storage Space For The Texture
+
 	memset(TextureImage, 0, sizeof(void*) * 1);           	// Set The Pointer To NULL
 
+	// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
+	char textureFileName[] = "C:/data/Programming/Workspaces/C++/OpenGL/MyProjects/github/openGL/wxWidgetOpenGLCube/Data/Crate.bmp";
+	const char* file = textureFileName;
 
-	MaterialInfo mat = materials->at(0);
-	char* textFile = const_cast<char*>(mat.textureFile.c_str());
-
-	string textureFilePath = GeneralModel::getInstance()->getModelPath();
-	textureFilePath.append(mat.textureFile);
-
-		if (TextureImage[0] = LoadBMP(textureFilePath.c_str()))
-		{
+	if (TextureImage[0] = LoadBMP(textureFileName))
+	{
 		Status = TRUE;									// Set The Status To TRUE
 
 		glGenTextures(1, &texture[0]);					// Create Three Textures
@@ -146,60 +145,8 @@ int OpenGLCanvas::LoadGLTextures()             // Load Bitmaps And Convert To Te
 }
 
 
-void OpenGLCanvas::RenderGround()
-{
-
-	const float maxZ = (float)(WORLD_DEPTH / 2);
-	const float minZ = -maxZ;
-	const float maxX = (float)(WORLD_WIDTH / 2);
-	const float minX = -maxX;
-
-
-	glBegin(GL_QUADS);
-		glColor3f(0.07058823529, 0.32549019608, 0.12941176471);
-		glNormal3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(maxX, 0.0f, maxZ);
-		glVertex3f(maxX, 0.0f, minZ);
-		glVertex3f(minX, 0.0f, minZ);
-		glVertex3f(minX, 0.0f, maxZ);	
-	glEnd();
-}
-
-void OpenGLCanvas::RenderAxis()
-{
-	const float maxZ = (float)(WORLD_DEPTH / 2);
-	const float minZ  = -maxZ;
-	const float maxX = (float)(WORLD_WIDTH / 2);
-	const float minX = -maxX;
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	for (float z = minZ; z < maxZ; z += 5.0f)
-	{
-		glBegin(GL_LINES);
-			glColor4f(0.0, 255.0, 255.0, 0.75f);
-			glVertex3f(minX, 0.05f, z);
-			glVertex3f(maxX, 0.05f, z);
-		glEnd();
-
-	}
-
-	for (float x = minX; x < maxX; x += 5.0f)
-	{
-		glBegin(GL_LINES);
-			glColor4f(0.0, 255.0, 255.0, 0.75f);
-			glVertex3f(x, 0.05f, minZ);
-			glVertex3f(x, 0.05f, maxZ);
-		glEnd();
-	}
-
-	glDisable(GL_BLEND);
-}
-
 void OpenGLCanvas::RenderScreen()
 {
-	Model3DRender render3d;		//Perhaps, having an instance a the class level would be more efficient
 	int width, height;
 
 	this->GetSize(&width, &height);
@@ -207,32 +154,84 @@ void OpenGLCanvas::RenderScreen()
 	int midX = width / 2;
 	int midY = height / 2;
 
-	Model3D* model = GeneralModel::getInstance()->getModel3D();
-	
+	//glBindTexture(GL_TEXTURE_2D, texture[0]);
 
-	int modelCount = GeneralModel::getInstance()->sizeModel3D();
-
-	list<Model3D*>*  modelsList =  GeneralModel::getInstance()->getModelsList();
 
 
 	//glBegin(GL_QUADS);
 	//	glColor3f(255.0, 255.0, 255.0);
 	//	glNormal3f(0.0f, 0.0f, 1.0f);
+	//	/*glVertex3f(1.0f, -1.0f, 0.0f);
+	//	glVertex3f(1.0f, 1.0f, 0.0f);
+	//	glVertex3f(-1.0f, 1.0f, 0.0f);
+	//	glVertex3f(-1.0f, -1.0f, 0.0f);*/
 	//	glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 0.0f);
 	//	glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, 0.0f);
 	//	glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, 0.0f);
 	//	glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, 0.0f);
 	//glEnd();
 
+	
+	
 
-	RenderGround();
-	RenderAxis();
 
-	list<WorldObject3D>* list = GeneralModel::getInstance()->getWorldObjectsList();
-	for (WorldObject3D next : *list)
+
+
+	//glViewport(0, m_windowHeight / 2, m_windowWidth / 2, m_windowHeight / 2);
+	
+	
+	glRotatef(angle, 1.0f, 0.0f, 0.0f);
+	glRotatef(angle, 0.0f, 1.0f, 0.0f);
+	glRotatef(angle, 0.0f, 0.0f, 1.0f);
+
+	int numVertex  = vertexes.size();
+	int numNormals = normals.size();
+	int numFaces   = faces.size();
+
+
+	for (Face3D next : faces)
 	{
-		render3d.render(&next);
+		Point3D  normal = next.normal;
+		RGB      color  = next.color;
+
+		if (next.type == TRIANGLE)
+		{
+			glBegin(GL_TRIANGLES);
+				glColor3f(color.red, color.green, color.blue);
+				glNormal3f(normal.x, normal.y, normal.z);
+				for (int i = 0; i < next.type; i++)
+				{
+					int nextIndex = next.vertex[i];
+					Point3D nextPoint = vertexes.at(nextIndex-1);
+					glVertex3f(nextPoint.x, nextPoint.y, nextPoint.z); \
+				}
+			glEnd();
+		}
+		else if (next.type == QUAD)
+		{
+			glBegin(GL_QUADS);
+				glColor3f(color.red, color.green, color.blue);
+				glNormal3f(normal.x, normal.y, normal.z);
+				for (int i = 0; i < next.type; i++)
+				{
+					int nextIndex = next.vertex[i];
+					Point3D nextPoint = vertexes.at(nextIndex-1);
+					glVertex3f(nextPoint.x, nextPoint.y, nextPoint.z); 
+				}
+		   glEnd();
+		}
+
 	}
+
+	long number = 10000;
+	char buffer[128];
+	int ret = snprintf(buffer, sizeof(buffer), "%ld", number);
+	const char* num_string = buffer; 
+	
+	drawString(num_string, 1, 1, WHITE);
+	drawString(num_string, 1, 2, RED);
+	drawString(num_string, 2, 1, GREEN);
+	drawString(num_string, 2, 2, BLUE);
 
 }
 	
@@ -258,27 +257,11 @@ void OpenGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
 
 	// Transformations
 	glLoadIdentity();
-
-	Camera3D* camera = GeneralModel::getInstance()->getCamera3D();
-
-	Point3D location = camera->getLocation();
-	Point3D rotation = camera->getRotation();
-
-	glTranslatef(location.x, location.y, location.z);
-
-	glRotatef(rotation.x, 1.0f, 0.0f, 0.0f); 
-	glRotatef(rotation.y, 0.0f, 1.0f, 0.0f);
-	glRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
-
-
-	/*glTranslatef(0.0f, 0.0f, -35.0f);
-	glRotatef(10.0f, 1.0f, 0.0f, 0.0f);*/
-
-	
-
+	glTranslatef(0.0f, 0.0f, -20.0f);
 	GLfloat m[4][4];
 	build_rotmatrix(m, m_gldata.quat);
 	glMultMatrixf(&m[0][0]);
+
 
 	RenderScreen();
 
@@ -304,8 +287,6 @@ void OpenGLCanvas::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
 
 
 
-
-
 void OpenGLCanvas::OnMouse(wxMouseEvent& event)
 {
 	if (event.Dragging())
@@ -325,22 +306,6 @@ void OpenGLCanvas::OnMouse(wxMouseEvent& event)
 		/* orientation has changed, redraw mesh */
 		Refresh(false);
 	}
-	else if (event.GetEventType() == wxEVT_MOUSEWHEEL)
-	{
-		Point3D  translate;
-		translate.x = 0.0f; translate.y = 0.0f;
-
-		Camera3D* camera = GeneralModel::getInstance()->getCamera3D();
-		
-		
-		if (event.GetWheelRotation() > 0)
-			translate.z = -10.0f;
-		else
-			translate.z = 10.0f;
-
-		camera->moveLocation(translate);
-		int a =2 ;
-	}
 
 	m_gldata.beginx = event.GetX();
 	m_gldata.beginy = event.GetY();
@@ -348,8 +313,7 @@ void OpenGLCanvas::OnMouse(wxMouseEvent& event)
 
 void OpenGLCanvas::OnAnimateTimerTick(wxTimerEvent& event)
 {
-	
-	//angle += 0.5f;
+	angle += 0.5f;
 	Refresh();
 }
 
@@ -358,23 +322,21 @@ void OpenGLCanvas::OnAnimateTimerTick(wxTimerEvent& event)
 
 void OpenGLCanvas::InitGL()
 {
-
-	Model3D* model = GeneralModel::getInstance()->getModel3D();
-
-	if (model->getModelColorType() == TEXTURE_FACES)
+	if (!LoadGLTextures())								// Jump To Texture Loading Routine
 	{
-		if (!LoadGLTextures())								// Jump To Texture Loading Routine
-			return;									// If Texture Didn't Load Return FALSE
+		return;									// If Texture Didn't Load Return FALSE
 	}
-
-	
 
 	// white light
 	static const GLfloat light0_color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	
+	static const GLfloat light0_pos[4] = { -50.0f, 50.0f, 0.0f, 0.0f };
+
+	// cold blue light
+	static const GLfloat light1_color[4] = { 0.4f, 0.4f, 1.0f, 1.0f };
+	static const GLfloat light1_pos[4] = { 50.0f, 50.0f, 0.0f, 0.0f };
+
 	/* remove back faces */
-	if (model->getModelColorType() == TEXTURE_FACES)  
-		glEnable(GL_TEXTURE_2D); // Enable Texture Mapping
+	//glEnable(GL_TEXTURE_2D);							// Enable Texture Mapping
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 
@@ -385,14 +347,20 @@ void OpenGLCanvas::InitGL()
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
 
 	/* light */
-	glLightfv(GL_LIGHT0, GL_AMBIENT, light0_color);	
+	glLightfv(GL_LIGHT0, GL_POSITION, light0_pos);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light0_color);
+	//glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_color);
+	glLightfv(GL_LIGHT1, GL_POSITION, light1_pos);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_color);
 	glEnable(GL_LIGHT0);
+	//glEnable(GL_LIGHT1);
 	glEnable(GL_LIGHTING);
 
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
 
 	
+
 }
 
 void OpenGLCanvas::ResetProjectionMode()
@@ -414,8 +382,33 @@ void OpenGLCanvas::ResetProjectionMode()
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0f, (GLfloat)w / h, 1.0, 200.0);
+	gluPerspective(45.0f, (GLfloat)w / h, 1.0, 100.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// write 2d text using GLUT
+// The projection matrix must be set to orthogonal before call this function.
+///////////////////////////////////////////////////////////////////////////////
+//void OpenGLCanvas::drawString(const char* str, int x, int y, float color[4], void* font)
+//{
+//	glPushAttrib(GL_LIGHTING_BIT | GL_CURRENT_BIT); // lighting and color mask
+//	glDisable(GL_LIGHTING);     // need to disable lighting for proper text color
+//	//glDisable(GL_TEXTURE_2D);
+//
+//	glColor4fv(color);          // set text color
+//	glRasterPos2i(x, y);        // place text position
+//
+//	// loop all characters in the string
+//	while (*str)
+//	{
+//		glutBitmapCharacter(font, *str);
+//		++str;
+//	}
+//
+//	//glEnable(GL_TEXTURE_2D);
+//	glEnable(GL_LIGHTING);
+//	glPopAttrib();
+//}
 
