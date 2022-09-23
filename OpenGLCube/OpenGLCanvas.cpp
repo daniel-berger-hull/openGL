@@ -18,6 +18,8 @@ wxBEGIN_EVENT_TABLE(OpenGLCanvas, wxGLCanvas)
 	EVT_PAINT(OpenGLCanvas::OnPaint)
 	EVT_ERASE_BACKGROUND(OpenGLCanvas::OnEraseBackground)
 	EVT_MOUSE_EVENTS(OpenGLCanvas::OnMouse)
+	EVT_KEY_DOWN(OpenGLCanvas::OnKeyboard)
+
 	EVT_TIMER(TIMER_ANIMATE_CANVAS, OpenGLCanvas::OnAnimateTimerTick)
 wxEND_EVENT_TABLE()
 
@@ -149,7 +151,15 @@ void OpenGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
 
 	// Transformations
 	glLoadIdentity();
-	glTranslatef(0.0f, 0.0f, -20.0f);
+//	glTranslatef(0.0f, 0.0f, -20.0f);
+	glTranslatef(0.0f, 0.0f, zPos);
+	glRotatef(yRot, 0.0f,1.0f , 0.0f);
+
+
+
+
+	
+
 	GLfloat m[4][4];
 	build_rotmatrix(m, m_gldata.quat);
 	glMultMatrixf(&m[0][0]);
@@ -203,6 +213,88 @@ void OpenGLCanvas::OnMouse(wxMouseEvent& event)
 	m_gldata.beginx = event.GetX();
 	m_gldata.beginy = event.GetY();
 }
+
+void OpenGLCanvas::OnKeyboard(wxKeyEvent& event)
+{
+	int a = 2;
+
+	wxChar uc = event.GetUnicodeKey();
+
+
+	if (uc == WXK_NONE)
+	{
+		switch (event.GetKeyCode())
+		{
+		case  WXK_LEFT:
+				yRot -= 0.5f;
+				Refresh();
+				break;
+		
+			case WXK_RIGHT:
+				yRot += 0.5f;
+				Refresh();
+				break;
+
+			case   WXK_UP:
+				zPos += 0.5f;
+				Refresh();
+				break;
+
+			case   WXK_DOWN:
+				zPos -= 0.5f;
+				Refresh();
+				break;
+		}
+	}
+	else if (uc == WXK_ESCAPE)
+	{
+		// Find what to do to force the app
+		Close(true);
+	}
+
+
+
+	//if (uc != WXK_NONE)
+	//{
+	//	// It's a "normal" character. Notice that this includes
+	//	// control characters in 1..31 range, e.g. WXK_RETURN or
+	//	// WXK_BACK, so check for them explicitly.
+	//	if (uc >= 32)
+	//	{
+	//		//wxLogMessage("You pressed '%c'", uc);
+	//	}
+	//	else
+	//	{
+	//		int a = 2;
+	//	}
+	//}
+	//else // No Unicode equivalent.
+	//{
+	//	// It's a special key, deal with all the known ones:
+	//	switch (event.GetKeyCode())
+	//	{
+	//	case WXK_LEFT:
+	//		a = 2;
+	//		break;
+	//	case WXK_RIGHT:
+	//		a = 2;
+	//		break;
+
+	//	case   WXK_UP:
+	//		a = 2;
+	//		break;
+	//
+	//	case   WXK_DOWN:
+	//		a = 2;
+	//		break;
+
+
+
+	//	}
+	//}
+
+}
+
 
 void OpenGLCanvas::OnAnimateTimerTick(wxTimerEvent& event)
 {

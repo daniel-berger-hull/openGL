@@ -45,6 +45,7 @@ protected:
 	void OnSize(wxSizeEvent& event);
 	void OnEraseBackground(wxEraseEvent& event);
 	void OnMouse(wxMouseEvent& event);
+	void OnKeyboard(wxKeyEvent& event);
 
 private:
 	void InitGL();
@@ -64,6 +65,9 @@ private:
 	
 	wxDECLARE_NO_COPY_CLASS(OpenGLCanvas);
 	wxDECLARE_EVENT_TABLE();
+
+	float zPos = -20.0f;
+	float yRot = 0.0f;
 };
 
 

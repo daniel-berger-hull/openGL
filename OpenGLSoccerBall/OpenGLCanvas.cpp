@@ -154,9 +154,6 @@ void OpenGLCanvas::RenderScreen()
 	int midX = width / 2;
 	int midY = height / 2;
 
-	//glBindTexture(GL_TEXTURE_2D, texture[0]);
-
-
 
 	//glBegin(GL_QUADS);
 	//	glColor3f(255.0, 255.0, 255.0);
@@ -172,12 +169,6 @@ void OpenGLCanvas::RenderScreen()
 	//glEnd();
 
 	
-	
-
-
-
-
-	//glViewport(0, m_windowHeight / 2, m_windowWidth / 2, m_windowHeight / 2);
 	
 	
 	glRotatef(angle, 1.0f, 0.0f, 0.0f);
@@ -228,10 +219,7 @@ void OpenGLCanvas::RenderScreen()
 	int ret = snprintf(buffer, sizeof(buffer), "%ld", number);
 	const char* num_string = buffer; 
 	
-	drawString(num_string, 1, 1, WHITE);
 	drawString(num_string, 1, 2, RED);
-	drawString(num_string, 2, 1, GREEN);
-	drawString(num_string, 2, 2, BLUE);
 
 }
 	
@@ -336,7 +324,7 @@ void OpenGLCanvas::InitGL()
 	static const GLfloat light1_pos[4] = { 50.0f, 50.0f, 0.0f, 0.0f };
 
 	/* remove back faces */
-	//glEnable(GL_TEXTURE_2D);							// Enable Texture Mapping
+	glEnable(GL_TEXTURE_2D);							// Enable Texture Mapping
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 
