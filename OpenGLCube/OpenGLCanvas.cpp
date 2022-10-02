@@ -140,25 +140,22 @@ void OpenGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
 	// Initialize OpenGL
 	if (!m_gldata.initialized)
 	{
-		InitGL();
+		//InitGL();
+		init();
 		ResetProjectionMode();
 		m_gldata.initialized = true;
 	}
 
 	// Clear
-	glClearColor(0.3f, 0.4f, 0.6f, 1.0f);
+	glClearColor(0.3f, 0.4f, 0.6f, 1.0f);   
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	
 	// Transformations
 	glLoadIdentity();
 //	glTranslatef(0.0f, 0.0f, -20.0f);
 	glTranslatef(0.0f, 0.0f, zPos);
 	glRotatef(yRot, 0.0f,1.0f , 0.0f);
 
-
-
-
-	
 
 	GLfloat m[4][4];
 	build_rotmatrix(m, m_gldata.quat);
@@ -303,6 +300,32 @@ void OpenGLCanvas::OnAnimateTimerTick(wxTimerEvent& event)
 }
 
 
+void OpenGLCanvas::init(void)
+{
+	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat mat_shininess[] = { 50.0 };
+	//GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
+	GLfloat light_position[4] = { -50.0f, 50.0f, 50.0f, 0.0f };
+
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glShadeModel(GL_SMOOTH);
+
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+
+	// New
+	static const GLfloat light0_color[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light0_color);
+
+	glEnable(GL_LIGHT0);
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_COLOR_MATERIAL);
+}
+
 
 
 void OpenGLCanvas::InitGL()
@@ -316,6 +339,11 @@ void OpenGLCanvas::InitGL()
 
 	// cold blue light
 	static const GLfloat light1_color[4] = { 0.4f, 0.4f, 1.0f, 1.0f };
+
+	static const GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+	static const GLfloat mat_shininess[] = { 50.0 };
+
 
 	/* remove back faces */
 	glEnable(GL_CULL_FACE);
@@ -331,11 +359,24 @@ void OpenGLCanvas::InitGL()
 
 	/* light */
 	glLightfv(GL_LIGHT0, GL_POSITION, light0_pos);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_color);
-	glLightfv(GL_LIGHT1, GL_POSITION, light1_pos);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_color);
+	//glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_color);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light0_color);
+
+
+
+
+	//glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	//glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	glMaterialfv(GL_BACK, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_BACK, GL_SHININESS, mat_shininess);
+
+	
+
+	
+	//glLightfv(GL_LIGHT1, GL_POSITION, light1_pos);
+	//glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_color);
 	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHT1);
+	//glEnable(GL_LIGHT1);
 	glEnable(GL_LIGHTING);
 
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);

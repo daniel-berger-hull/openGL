@@ -48,6 +48,7 @@ protected:
 	void OnKeyboard(wxKeyEvent& event);
 
 private:
+	void init(void);
 	void InitGL();
 	void ResetProjectionMode();
 	void RenderScreen();
