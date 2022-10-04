@@ -20,3 +20,5 @@ OpenGLArrayDraw --> Experiment to use OpenGL's glDrawArrays function, instead of
 OpenGLEditorTemplate --> Small project who could be used as a base for creating more complex editor
                          with an OpenGL Rendering
                 
+OpenGLForestLights--> Based on the OpenGLForest (for its visual content) and OpenGLEditorTemplate (for it use of a wxWidget right panel section),
+                      to study the OpenGL lighting system
