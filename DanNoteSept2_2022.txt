@@ -21,4 +21,5 @@ Lesson 30  ball scene
   2 - And if yes, what are the OpenGL setting to acheive this
   
  Priority  Medium
+ 
 
